@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="36" fill="#0F1C54"/>
+  <circle cx="96" cy="66" r="30" fill="#F0B429"/>
+  <path d="M66 110l26 26 44-44" stroke="#F0B429" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <text x="96" y="158" font-family="sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">MITS</text>
+</svg>

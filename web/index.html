@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1C54">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MITS Events">
+<meta name="description" content="College Event Management System - register for events and chat with fellow students.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/mits_logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<title>MITS College Event Management System</title>
+</head>
+<body>
+<aside class="side">
+  <div class="brand"><img class="logo" src="images/mits_logo.jpg" alt="Madhav Institute of Technology and Science logo"><span>Madhav Institute of Technology &amp; Science<br><small>College Event Management System</small></span></div>
+  <div>
+    <h1>welcome to MITS events.</h1>
+    <p>Admins create and manage events. Students register and track what they have joined.</p>
+  </div>
+  <div class="tiles" aria-label="Upcoming events">
+    <div class="tile"><div class="date">18<small>OCT</small></div><div><b>Hackathon 2026</b><span>CSE Block · 142 registered</span></div></div>
+    <div class="tile"><div class="date">24<small>OCT</small></div><div><b>Tech Quiz Finals</b><span>Auditorium · 64 registered</span></div></div>
+    <div class="tile"><div class="date">02<small>NOV</small></div><div><b>Cultural Night</b><span>Main Lawn · 310 registered</span></div></div>
+  </div>
+</aside>
+
+<main class="main">
+  <section class="card" id="loginView">
+    <h2>Sign in</h2>
+    <p class="sub">Use your college account to continue.</p>
+    <div class="seg" role="group" aria-label="Account type">
+      <button type="button" id="rAdmin" aria-pressed="true">Admin</button>
+      <button type="button" id="rStudent" aria-pressed="false">Student</button>
+    </div>
+    <p class="hint" id="roleHint">Admin sign-in is only available to the registered admin email.</p>
+    <div class="field">
+      <label for="user">Username or email</label>
+      <input id="user" autocomplete="username" placeholder="Username or email" aria-describedby="msg">
+    </div>
+    <div class="field">
+      <label for="pass">Password</label>
+      <div class="in">
+        <input id="pass" type="password" autocomplete="current-password" placeholder="Enter your password" aria-describedby="msg">
+        <button type="button" class="eye" id="eye" aria-label="Show password">Show</button>
+      </div>
+    </div>
+    <div class="msg" id="msg" role="alert"></div>
+    <button class="go" id="go" type="button">Sign in</button>
+    <p class="hint" id="hint">Demo admin login: <code>admin</code> or <code>admin@mits.ac.in</code> / <code>admin123</code></p>
+    <p class="hint" style="margin-top:8px"><a id="forgotLink" href="#" style="color:var(--accent);text-decoration:none">Forgot password?</a></p>
+    <p class="hint" style="margin-top:8px"><a id="signupLink" href="#" style="color:var(--accent);text-decoration:none">Don't have an account? Sign up</a></p>
+    <div id="installBar" style="display:none;margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);align-items:center;gap:10px">
+      <img src="images/mits_logo.jpg" width="28" height="28" alt="">
+      <div style="flex:1"><div style="font-weight:600">Install MITS Events</div><div style="font-size:12px;color:var(--muted)">Add to home screen for app-like use</div></div>
+      <button id="installBtn" class="go" style="width:auto;padding:6px 14px;font-size:14px">Install</button>
+    </div>
+  </section>
+
+  <!-- Sign up: create new student account with Gmail + OTP -->
+  <section class="card" id="signupView" style="display:none">
+    <h2>Create account</h2>
+    <p class="sub">Sign up as a student using your college Gmail.</p>
+    <div class="field">
+      <label for="suser">Full name / username</label>
+      <input id="suser" autocomplete="username" placeholder="e.g. Rituraj Sengar" aria-describedby="smsg">
+    </div>
+    <div class="field">
+      <label for="semail">College Gmail</label>
+      <input id="semail" autocomplete="email" type="email" placeholder="you@college.edu" aria-describedby="smsg">
+    </div>
+    <div class="field">
+      <label for="spass">Password</label>
+      <input id="spass" type="password" autocomplete="new-password" placeholder="At least 6 characters" aria-describedby="smsg">
+    </div>
+    <div class="msg" id="smsg" role="alert"></div>
+    <button class="go" id="ssend" type="button">Send OTP</button>
+
+    <!-- OTP step (shown after Send OTP) -->
+    <div id="sotp" style="display:none;margin-top:14px">
+      <div class="field">
+        <label for="sotpcode">6-digit OTP</label>
+        <input id="sotpcode" inputmode="numeric" maxlength="6" placeholder="000000" aria-describedby="sotpmsg">
+      </div>
+      <div class="msg" id="sotpmsg" role="alert"></div>
+      <button class="go" id="sverify" type="button">Verify OTP & Create Account</button>
+      <p class="hint" id="sothint"></p>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="dc" id="sresend" type="button" style="width:auto">Resend OTP</button>
+      </div>
+    </div>
+
+    <button class="dc" id="sback" type="button" style="margin-top:10px;width:auto">&larr; Back to sign in</button>
+  </section>
+
+  <!-- Forgot password: email step -->
+  <section class="card" id="forgotView" style="display:none">
+    <h2>Reset password</h2>
+    <p class="sub">Enter your email to receive a 6-digit reset code.</p>
+    <div class="field">
+      <label for="femail">Email or username</label>
+      <input id="femail" autocomplete="email" placeholder="you@college.edu" aria-describedby="fmsg">
+    </div>
+    <div class="msg" id="fmsg" role="alert"></div>
+    <button class="go" id="fsend" type="button">Send code</button>
+    <p class="hint" id="fhint"></p>
+    <button class="dc" id="fback" type="button" style="margin-top:10px;width:auto">&larr; Back to sign in</button>
+  </section>
+
+  <!-- Forgot password: OTP + new password step -->
+  <section class="card" id="resetView" style="display:none">
+    <h2>Reset password</h2>
+    <p class="sub">Enter the 6-digit code and your new password.</p>
+    <div class="field">
+      <label for="rotp">6-digit code</label>
+      <input id="rotp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-describedby="rmsg">
+    </div>
+    <div class="field">
+      <label for="rpass">New password</label>
+      <input id="rpass" type="password" autocomplete="new-password" placeholder="At least 6 characters" aria-describedby="rmsg">
+    </div>
+    <div class="msg" id="rmsg" role="alert"></div>
+    <button class="go" id="rreset" type="button">Reset password</button>
+    <p class="hint" id="rhint"></p>
+    <button class="dc" id="rback" type="button" style="margin-top:10px;width:auto">&larr; Back</button>
+  </section>
+
+  <section class="card" id="otpView" style="display:none"><h2>Verify it's you</h2><p class="sub" id="otpSub"></p><div class="field"><label for="otp">6-digit code</label><input id="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000"></div><div class="msg" id="omsg" role="alert"></div><button class="go" id="vf" type="button">Verify and continue</button><p class="hint" id="otpHint"></p><div style="display:flex;gap:10px;margin-top:6px"><button class="dc" id="rs" type="button">Resend code</button><button class="dc" id="bk" type="button">Back to sign in</button></div></section>
+
+  <section class="card done" id="doneView">
+    <h2 id="welcome">Signed in</h2>
+    <p class="sub" id="role"></p>
+    <button class="go" id="out" type="button">Sign out</button>
+  </section>
+</main>
+<div id="app"><header class="bar"><img src="images/mits_logo.jpg" alt="MITS logo"><b>College Event Management System</b><span class="sp"></span><span id="who"></span><button id="so" type="button">Sign out</button></header><div class="wrap"><nav id="nav" aria-label="Main menu"></nav><section class="pane" id="pane"></section></div></div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" crossorigin="anonymous"></script>
+<script src="js/login.js?v=8"></script>
+<script src="js/app.js?v=9"></script>
+<script>
+  /* ---------- PWA install + service worker ---------- */
+  let deferredPrompt = null;
+  const installBar = document.getElementById('installBar');
+  const installBtn = document.getElementById('installBtn');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBar) installBar.style.display = 'flex';
+  });
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice.outcome === 'accepted') {
+        installBar.style.display = 'none';
+        deferredPrompt = null;
+      }
+    });
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then((reg) => {
+      console.log('SW registered:', reg.scope);
+    }).catch((err) => {
+      console.log('SW registration failed:', err);
+    });
+  }
+</script>
+</body>
+</html>

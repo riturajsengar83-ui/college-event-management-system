@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Secrets - local only, never committed
+.env
+
+# Local runtime data
+database.json
+server.log
+
+# Misc artifacts
+.DS_Store
