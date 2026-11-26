@@ -10,7 +10,8 @@
   var token=localStorage.getItem('ce-token')||'';
 
   /* ---------- real-time sync across devices ---------- */
-  function initSocket(){
+  var socketLoading=false;
+  function connectSocket(){
     if(socket) return;
     socket=io(API,{auth:{token:token},transports:['websocket','polling']});
     socket.on('connect_error',function(){});
@@ -24,6 +25,21 @@
         }
       });
     });
+  }
+  /* Load the socket.io client from our own API server. The public CDN
+     (cdn.socket.io) is blocked on some networks, and a missing `io` must
+     never stop the dashboard from rendering. */
+  function initSocket(){
+    if(socket) return;
+    if(typeof io!=='undefined'){connectSocket();return;}
+    if(socketLoading) return;
+    socketLoading=true;
+    var s=document.createElement('script');
+    s.src=API+'/socket.io/socket.io.js';
+    s.async=true;
+    s.onload=function(){socketLoading=false;if(typeof io!=='undefined')connectSocket();};
+    s.onerror=function(){socketLoading=false;};
+    document.head.appendChild(s);
   }
 
   /* ---------- api helper ---------- */
@@ -81,7 +97,7 @@
     var h='<h2>Welcome, '+(role==='admin'?'Admin':'Student')+'</h2><p class="sub">Choose what you want to do.</p><div class="kpis"><div class="kpi"><b>'+ev.length+'</b>Events</div><div class="kpi"><b>'+regs.length+'</b>Registrations</div><div class="kpi"><b>'+(ev.reduce(function(a,e){return a+e.seats},0)-regs.length)+'</b>Seats open</div></div>';
     
     /* ---------- Profile photo section (prominent on home) ---------- */
-    var photoUrl=curMe.photo||'';
+    var photoUrl=(curMe&&curMe.photo)||'';
     h+='<div class="form" style="max-width:440px;margin-top:24px">';
     h+='<div style="background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:20px">';
     h+='<h3 style="margin-top:0">📷 Profile Picture</h3>';
@@ -276,18 +292,11 @@
   /* ---------- WhatsApp-like group chat ---------- */
   V.chat=function(){
     if(typeof io==='undefined'){
-      $('pane').innerHTML='<h2>Group chat</h2><p class="sub">Real-time chat library could not be loaded. Check your internet connection and reload.</p>';
+      initSocket();
+      $('pane').innerHTML='<h2>Group chat</h2><p class="sub">Real-time chat is still loading. Open Group chat again in a moment.</p>';
       return;
     }
-    if(!socket){
-      socket=io(API,{auth:{token:token},transports:['websocket','polling']});
-      socket.on('connect_error',function(){});
-      socket.on('data_changed',function(change){
-        loadData().then(function(){
-          if(cur==='view'||cur==='home'||cur==='reg'||cur==='find'||cur==='stats') draw();
-        });
-      });
-    }
+    if(!socket)connectSocket();
     socket.off('new_message');
     socket.off('connect_error');
     socket.on('connect_error',function(){note('Chat: could not connect to real-time server.');});
@@ -413,7 +422,7 @@
       who.appendChild(pBtn);
     }
     who.style.display='inline-flex';who.style.alignItems='center';who.style.gap='8px';
-    initSocket();
+    try{initSocket();}catch(e){}
     if(token){
       loadData().then(function(){draw();window.scrollTo(0,0);});
     }else{

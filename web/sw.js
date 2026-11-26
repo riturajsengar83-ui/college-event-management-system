@@ -1,13 +1,13 @@
 // college-event-system/web/sw.js
 // Service worker for PWA installability + offline cache
-const CACHE = 'college-event-v10';
+const CACHE = 'college-event-v11';
 const ASSETS = [
   '/',
   '/index.html',
   '/css/style.css',
   '/js/config.js?v=1',
   '/js/login.js?v=8',
-  '/js/app.js?v=9',
+  '/js/app.js?v=10',
   '/manifest.json',
   '/images/mits_logo.jpg',
   '/images/icon-192.svg',
@@ -35,6 +35,8 @@ self.addEventListener('fetch', (e) => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== location.origin) return;
+  // Never cache API calls - the dashboard must always see fresh data.
+  if (url.pathname.startsWith('/api/')) return;
   const isAppShell = request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('.js') || url.pathname.endsWith('.css') || url.pathname === '/';
   if (isAppShell) {
     e.respondWith(
