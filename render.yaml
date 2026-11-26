@@ -1,0 +1,33 @@
+# Render Blueprint for the College Event Management backend.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploy: Render Dashboard -> New -> Blueprint -> pick this repo.
+# The website itself stays on Vercel; only the backend runs here.
+services:
+  - type: web
+    name: college-event-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Generated once by Render, then kept stable across deploys.
+      - key: JWT_SECRET
+        generateValue: true
+      # Optional: add these in the Render dashboard (Environment tab) to send
+      # real OTP emails. Without them the server runs in demo mode and prints
+      # OTP codes to the Render logs.
+      # - key: SMTP_HOST
+      #   sync: false
+      # - key: SMTP_PORT
+      #   sync: false
+      # - key: SMTP_USER
+      #   sync: false
+      # - key: SMTP_PASS
+      #   sync: false
+      # - key: SMTP_FROM
+      #   sync: false

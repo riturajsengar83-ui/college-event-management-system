@@ -21,6 +21,9 @@ Double-click `web/index.html`. Keep the folders as they are.
 Demo logins: admin / admin123 (or admin@mits.ac.in), student / student123 (or student@mits.ac.in).
 The OTP code is shown on screen in demo mode.
 
+## 1b. Deploy online (Vercel + Render)
+See [DEPLOY.md](DEPLOY.md): the website runs on Vercel, the Node backend on Render.
+
 ## 2. Run the C backend (optional)
     cd backend
     gcc auth_otp.c -o auth

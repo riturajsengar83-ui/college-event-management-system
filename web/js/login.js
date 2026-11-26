@@ -1,6 +1,10 @@
 (function(){
   var $=function(i){return document.getElementById(i)};
-  var API=window.location.origin==='null'?'http://localhost:3001':window.location.origin;
+  var API=(function(){
+    var base=(window.CE_API_BASE||'').replace(/\/+$/,'');
+    if(base)return base;
+    return window.location.origin==='null'?'http://localhost:3001':window.location.origin;
+  })();
   var u=$('user'),p=$('pass'),m=$('msg');
   var loginRole='admin'; // which account type the user is signing in as; server still verifies it
 

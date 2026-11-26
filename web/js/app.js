@@ -1,6 +1,10 @@
 (function(){
   var $=function(i){return document.getElementById(i)};
-  var API=window.location.origin==='null'?'http://localhost:3001':window.location.origin;
+  var API=(function(){
+    var base=(window.CE_API_BASE||'').replace(/\/+$/,'');
+    if(base)return base;
+    return window.location.origin==='null'?'http://localhost:3001':window.location.origin;
+  })();
   var role='student',cur='home',delI=-1,selE=null,evFilter='all';
   var curMe=null, ev=[], regs=[], socket=null;
   var token=localStorage.getItem('ce-token')||'';
