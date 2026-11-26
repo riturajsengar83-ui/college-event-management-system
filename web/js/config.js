@@ -8,4 +8,4 @@
    Example:
      window.CE_API_BASE = 'https://mits-events-backend.onrender.com';
    ============================================================================ */
-window.CE_API_BASE = '';
+window.CE_API_BASE = 'https://college-event-management-system-i7vg.onrender.com';
