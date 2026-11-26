@@ -1,13 +1,13 @@
 // college-event-system/web/sw.js
 // Service worker for PWA installability + offline cache
-const CACHE = 'college-event-v11';
+const CACHE = 'college-event-v12';
 const ASSETS = [
   '/',
   '/index.html',
   '/css/style.css',
   '/js/config.js?v=1',
   '/js/login.js?v=8',
-  '/js/app.js?v=10',
+  '/js/app.js?v=11',
   '/manifest.json',
   '/images/mits_logo.jpg',
   '/images/icon-192.svg',

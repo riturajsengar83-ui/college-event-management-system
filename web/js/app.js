@@ -303,7 +303,6 @@
     socket.on('new_message',function(m){appendMessage(m);});
     var opts='',sel=null;
     ev.forEach(function(e){
-      if(role==='student'&&!regs.some(function(r){return r.user_id===curMe.id&&r.event_id===e.id}))return;
       var s=sel===null?' selected':'';if(sel===null)sel=e.id;
       opts+='<option value="'+e.id+'"'+s+'>'+esc(e.event_id)+' · '+esc(e.name)+' ('+cnt(e.id)+' members)</option>';
     });

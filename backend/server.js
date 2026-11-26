@@ -443,10 +443,6 @@ app.post('/api/messages', authMiddleware, (req, res) => {
     if (!message || !message.trim()) return res.status(400).json({ error: 'Empty message' });
     const event = DB.events.find(e => e.id === event_id);
     if (!event) return res.status(404).json({ error: 'Event not found' });
-    if (req.user.role !== 'admin') {
-      const reg = DB.registrations.find(r => r.user_id === req.user.id && r.event_id === event_id);
-      if (!reg) return res.status(403).json({ error: 'You are not registered for this event' });
-    }
     const msg = { id: nextId(DB.messages), event_id, sender_id: req.user.id, message: message.trim(), created_at: new Date().toISOString() };
     DB.messages.push(msg); saveDB();
     const row = { id: msg.id, message: msg.message, created_at: msg.created_at, sender_id: msg.sender_id,
