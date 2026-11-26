@@ -18,7 +18,7 @@
 
 ## 1. Run the website
 Double-click `web/index.html`. Keep the folders as they are.
-Demo logins: admin / admin123 (or admin@mits.ac.in), student / student123 (or student@mits.ac.in).
+Demo logins: admin / admin123, student / student123. The admin account also accepts the registered admin email (riturajsengar83@gmail.com); student@mits.ac.in is the student email.
 The OTP code is shown on screen in demo mode.
 
 ## 1b. Deploy online (Vercel + Render)

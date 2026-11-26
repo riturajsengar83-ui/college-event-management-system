@@ -8,7 +8,7 @@
     gcc auth_otp.c -o auth
     ./auth
 
-Sample logins: `admin` or `admin@mits.ac.in` / `admin123`; `student` or `student@mits.ac.in` / `student123`.
+Sample logins: `admin` or `riturajsengar83@gmail.com` / `admin123`; `student` or `student@mits.ac.in` / `student123`.
 
 ## Add a user
     ./auth --hash rahul rahul@mits.ac.in student MyPass123 >> users.data
