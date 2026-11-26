@@ -174,6 +174,18 @@ app.post('/api/auth/register', async (req, res) => {
   } catch (e) { res.status(400).json({ error: e.message }); }
 });
 
+/* ---------- diagnostics: which admin env vars this server can see ---------- */
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+    adminEnv: {
+      ADMIN_USERNAME: !!process.env.ADMIN_USERNAME,
+      ADMIN_EMAIL: !!process.env.ADMIN_EMAIL,
+      ADMIN_PASSWORD: !!process.env.ADMIN_PASSWORD
+    }
+  });
+});
+
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password, role: requestedRole } = req.body;
