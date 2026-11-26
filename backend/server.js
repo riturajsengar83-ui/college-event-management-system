@@ -81,23 +81,31 @@ function roleOf(user) { return user && user.email === ADMIN_EMAIL ? 'admin' : 's
 
 /* ---------- seed demo data ---------- */
 function seed() {
-  // Demote any account (e.g. from the old open register endpoint) that is not the real admin email.
-  DB.users.forEach(u => { if (u.role === 'admin' && u.email !== ADMIN_EMAIL) u.role = 'student'; });
-  if (!DB.users.some(u => u.email === ADMIN_EMAIL)) {
-    DB.users.push({
+  // Keep exactly one admin account. Prefer the configured email, then any
+  // existing admin; if neither exists, create one.
+  let admin = DB.users.find(u => u.email === ADMIN_EMAIL) || DB.users.find(u => u.role === 'admin');
+  if (!admin) {
+    admin = {
       id: nextId(DB.users), username: ADMIN_USERNAME, email: ADMIN_EMAIL,
       password: bcrypt.hashSync(ADMIN_PASSWORD, 10), role: 'admin',
       enrollment_no: null, branch: null, created_at: new Date().toISOString()
-    });
+    };
+    DB.users.push(admin);
+  } else {
+    // The environment is authoritative: it can move the admin account to a new
+    // email/username and rotate the password without creating a duplicate.
+    admin.email = ADMIN_EMAIL;
+    admin.username = ADMIN_USERNAME;
+    admin.role = 'admin';
+    if (process.env.ADMIN_PASSWORD) admin.password = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+    else if (!admin.password) admin.password = bcrypt.hashSync(ADMIN_PASSWORD, 10);
   }
-  const realAdmin = DB.users.find(u => u.email === ADMIN_EMAIL);
-  if (realAdmin) {
-    realAdmin.role = 'admin';
-    realAdmin.username = ADMIN_USERNAME;
-    // When ADMIN_PASSWORD is set in the environment, it is authoritative on every boot.
-    if (process.env.ADMIN_PASSWORD) realAdmin.password = bcrypt.hashSync(ADMIN_PASSWORD, 10);
-    else if (!realAdmin.password) realAdmin.password = bcrypt.hashSync(ADMIN_PASSWORD, 10);
-  }
+  // Everyone except the admin is a student.
+  DB.users.forEach(u => { if (u !== admin) u.role = 'student'; });
+  // Keep usernames unique so login never resolves to the wrong account.
+  DB.users.forEach(u => {
+    if (u !== admin && u.username === ADMIN_USERNAME) u.username = ADMIN_USERNAME + '#' + u.id;
+  });
   if (!DB.users.some(u => u.username === 'student')) {
     DB.users.push({
       id: nextId(DB.users), username: 'student', email: 'student@mits.ac.in',
@@ -120,6 +128,7 @@ function seed() {
 }
 loadDB();
 seed();
+console.log(`[ADMIN] env: ADMIN_USERNAME=${process.env.ADMIN_USERNAME ? 'set' : 'default'}, ADMIN_EMAIL=${process.env.ADMIN_EMAIL ? 'set' : 'default'}, ADMIN_PASSWORD=${process.env.ADMIN_PASSWORD ? 'set' : 'default'}`);
 
 /* ---------- express setup ---------- */
 const app = express();
