@@ -24,7 +24,9 @@ const fs = require('fs');
 const path = require('path');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'college-event-secret-change-me-in-production';
-const ADMIN_EMAIL = 'riturajsengar83@gmail.com'; // the only account allowed to have admin rights
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'riturajsengar83@gmail.com'; // the only account allowed to have admin rights
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const PORT = process.env.PORT || 3001;
 const DB_FILE = path.join(__dirname, 'database.json');
 const OTP_TTL_MIN = parseInt(process.env.OTP_TTL_MIN || '10', 10);
@@ -83,13 +85,19 @@ function seed() {
   DB.users.forEach(u => { if (u.role === 'admin' && u.email !== ADMIN_EMAIL) u.role = 'student'; });
   if (!DB.users.some(u => u.email === ADMIN_EMAIL)) {
     DB.users.push({
-      id: nextId(DB.users), username: 'admin', email: ADMIN_EMAIL,
-      password: bcrypt.hashSync('admin123', 10), role: 'admin',
+      id: nextId(DB.users), username: ADMIN_USERNAME, email: ADMIN_EMAIL,
+      password: bcrypt.hashSync(ADMIN_PASSWORD, 10), role: 'admin',
       enrollment_no: null, branch: null, created_at: new Date().toISOString()
     });
   }
   const realAdmin = DB.users.find(u => u.email === ADMIN_EMAIL);
-  if (realAdmin) realAdmin.role = 'admin';
+  if (realAdmin) {
+    realAdmin.role = 'admin';
+    realAdmin.username = ADMIN_USERNAME;
+    // When ADMIN_PASSWORD is set in the environment, it is authoritative on every boot.
+    if (process.env.ADMIN_PASSWORD) realAdmin.password = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+    else if (!realAdmin.password) realAdmin.password = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+  }
   if (!DB.users.some(u => u.username === 'student')) {
     DB.users.push({
       id: nextId(DB.users), username: 'student', email: 'student@mits.ac.in',

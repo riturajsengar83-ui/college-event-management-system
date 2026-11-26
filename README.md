@@ -18,7 +18,7 @@
 
 ## 1. Run the website
 Double-click `web/index.html`. Keep the folders as they are.
-Demo logins: admin / admin123, student / student123. The admin account also accepts the registered admin email (riturajsengar83@gmail.com); student@mits.ac.in is the student email.
+Admin sign-in uses the account you configure with the `ADMIN_USERNAME`, `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables (see [DEPLOY.md](DEPLOY.md)). Demo student login: `student` / `student123`.
 The OTP code is shown on screen in demo mode.
 
 ## 1b. Deploy online (Vercel + Render)

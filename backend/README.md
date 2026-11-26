@@ -8,7 +8,7 @@
     gcc auth_otp.c -o auth
     ./auth
 
-Sample logins: `admin` or `riturajsengar83@gmail.com` / `admin123`; `student` or `student@mits.ac.in` / `student123`.
+Sample logins: the admin account is seeded from the `ADMIN_USERNAME` / `ADMIN_EMAIL` / `ADMIN_PASSWORD` environment variables; demo student is `student` / `student123`.
 
 ## Add a user
     ./auth --hash rahul rahul@mits.ac.in student MyPass123 >> users.data

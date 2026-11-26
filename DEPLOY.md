@@ -20,6 +20,14 @@ repo root. `vercel.json` now serves the `web/` folder, which fixes it.
 5. (Optional) In Render → your service → **Environment**, add `SMTP_HOST`,
    `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` to send real OTP emails.
    `JWT_SECRET` is generated automatically by the blueprint.
+6. In Render → **Environment**, set your admin login (recommended):
+   - `ADMIN_USERNAME` — the admin username you want
+   - `ADMIN_EMAIL` — your email (used for password-reset OTPs)
+   - `ADMIN_PASSWORD` — a strong password
+
+   These are applied when the backend boots (seeded account). To change the
+   password later, update `ADMIN_PASSWORD` and let Render redeploy. If you leave
+   them unset, the defaults in `backend/server.js` are used.
 
 Notes for the free plan:
 - The service sleeps after ~15 minutes idle; the first request takes ~30s to wake.
@@ -56,7 +64,7 @@ Then **Deployments → Redeploy**. The root URL should now load the login page.
 ## 4. Verify
 
 1. Open the Vercel URL → the login page appears.
-2. Sign in with `admin` / `admin123` (or `student` / `student123`).
+2. Sign in with your configured admin account (the `ADMIN_*` env vars), or `student` / `student123`.
 3. Create an event, then open chat in two browsers to confirm real-time works.
 
 ## Troubleshooting
